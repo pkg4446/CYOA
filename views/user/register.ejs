@@ -1,0 +1,81 @@
+<script>
+    function submitfn(){
+        let joindata = {
+            "USER_ID": document.getElementById('USER_ID').value,
+            "USER_NAME": document.getElementById('USER_NAME').value,
+            "USER_PASS": document.getElementById('USER_PASS').value,
+            "USER_EMAIL": document.getElementById('USER_EMAIL').value,
+            };
+            console.log(joindata);
+
+        if(document.getElementById('USER_PASS').value === document.getElementById('pass').value){
+            $.ajax({
+                contentType: "application/json; charset=utf-8",
+                url : "/auth/join",
+                type : 'POST', 
+                dataType:'json',
+                data : JSON.stringify(joindata), 
+                success : function(data) {
+                    if(data.userCheck === "notAble"){
+                        alert("이미 가입된 아이디 입니다.");
+                    }
+                    window.location.href = "/user/login";
+                }, // success 
+                error : function(xhr, status) {
+                    alert(xhr + " : " + status);
+                    console.log(xhr);
+                }            
+            }); // $.ajax 
+        }else{
+            alert("비밀번호가 서로 일치하지 않습니다.");
+        }
+    }
+</script>
+
+<body class="bg-gradient-primary">
+    <div class="container">
+        <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                            </div>
+                            <form class="user">
+                                <div class="form-group">
+                                    <input type="text" class="form-control form-control-user" placeholder="아이디"
+                                    name='USER_ID' id='USER_ID'>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" class="form-control form-control-user" placeholder="이메일"
+                                    name='USER_EMAIL' id='USER_EMAIL'>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="password" class="form-control form-control-user" placeholder="암호"
+                                        name='USER_PASS' id='USER_PASS'>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="password" class="form-control form-control-user" placeholder="암호 확인"
+                                        id='pass'>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control form-control-user" placeholder="이름"
+                                    name='USER_NAME' id='USER_NAME'>
+                                </div>
+                                
+                                <hr>
+                                <input type='button' class="btn btn-primary btn-user btn-block" value="Register Account" onclick="submitfn(); return false;">
+                            </form>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

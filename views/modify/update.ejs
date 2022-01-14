@@ -1,0 +1,148 @@
+<script type="text/javascript">
+
+var gName     = "";
+var gDate     = "";
+var gCategory = "";
+var gToken    = "";
+var gImage    = "";
+
+$(document).ready(function() {
+    upDate();
+
+    $('#listBtn').click(function(){
+        $.ajax({
+            contentType: "application/json; charset=utf-8",
+            type:"get",
+            dataType:'json',
+            data: '',
+            url: '/wasp',
+            success: function(data) {
+                console.log(data);
+                tableValue(data);
+                deleteTables(data);
+                tables(data);  
+            },
+            error: function searchError(xhr, err) {
+                window.location.href = '/';
+            }
+        });
+    });
+});
+
+playAlert = setInterval(function() {
+    upDate();
+}, 2000);
+
+function upDate(){
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        type:"get",
+        dataType:'json',
+        data: '',
+        url: '/wasp/alram',
+        success: function(data) {
+            console.log(data);
+            tableValue(data);
+        },
+        error: function searchError(xhr, err) {
+            window.location.href = '/';
+        }
+    });
+}
+
+function tableValue(tableContents){
+    let count = 0;
+    let jsonLength = Object.keys(tableContents).length-1; //json object count
+
+    if(gName != tableContents[jsonLength].EQPMN_ESNTL_SN){
+        gName = tableContents[jsonLength].EQPMN_ESNTL_SN;
+        count++;
+    }
+    if(gDate != tableContents[jsonLength].MESURE_DT){
+        gDate = tableContents[jsonLength].MESURE_DT;
+        count++;
+    }
+    if(gCategory != tableContents[jsonLength].CATEGORY){
+        gCategory = tableContents[jsonLength].CATEGORY;
+        count++;
+    }
+    if(gImage != tableContents[jsonLength].IMAGE){
+        gImage = tableContents[jsonLength].IMAGE;
+        count++;
+    }
+    if(count > 0 ){
+        tables(tableContents);  
+    }
+}
+
+function deleteTables(tableContents) {
+    let table = document.getElementById("datatables");
+
+    //테이블 모두 삭제
+    for(let i = table.rows.length - 1; i >= 0; i--)
+    {
+        table.deleteRow(i);
+    }   
+}
+
+function tables(tableContents) {
+    let table = document.getElementById("datatables");
+    //Table data insert
+    for(tableNum in tableContents){
+        let row = table.insertRow(0); // Upper side insert
+        let name = row.insertCell(0);
+        let date = row.insertCell(1);
+        let category = row.insertCell(2);
+        let Image = row.insertCell(3);
+
+        name.innerHTML = tableContents[tableNum].EQPMN_ESNTL_SN;
+        date.innerHTML = new Date(tableContents[tableNum].MESURE_DT);
+        category.innerHTML = tableContents[tableNum].CATEGORY;
+        Image.innerHTML = '<a href = "/img/' + tableContents[tableNum].IMAGE +'" target = "blank" > <img src="/img/' + tableContents[tableNum].IMAGE +'" style="max-width: 200px; height: auto;"> </a>';
+        console.log(tableNum);
+    }
+}
+
+</script>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">말벌 감지 알림</h1>
+    <p class="mb-4">말벌 감지 내역 입니다.</p>
+
+    <!-- Hornet detection record -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Hornet detection record</h6>
+        </div>
+        <div class="card-body" id="test">
+            <div class="table-responsive" >
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>EquimentNumber</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Image</th>
+                        </tr>
+                    </thead>
+                    <tbody id="datatables">
+                        <% for(var i in data){ %>
+                            <tr>
+                                <td><%=data[i].EQPMN_ESNTL_SN%></td>
+                                <td><%=data[i].MESURE_DT%></td>
+                                <td><%=data[i].CATEGORY%></td>
+                                <td><a href = "/img/<%=data[i].IMAGE%>" target = "blank" > <img src="/img/<%=data[i].IMAGE%>" style="max-width: 200px; height: auto;"> </a></td>
+                            </tr>
+                            <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>  
+        <button type="button" id="listBtn" class="btn btn-primary">전체 기록 가져오기</button>
+    </div>
+
+</div>
+<!-- /.container-fluid -->

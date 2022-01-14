@@ -1,0 +1,20 @@
+<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th>번호</th>
+            <th>미리보기</th>
+            <th>파일이름</th>   
+            <th>파일크기</th>
+        </tr>
+    </thead>
+    <tbody id="datatables">
+        <% for(var i in image){ %>      
+        <tr>
+            <td width="10%"><%=image[i].NO%></td>
+            <td width="20%"><a href="/<%=image[i].NO%>"><img src= "img/<%=image[i].IMAGE%>" style="width:100%; height:auto"/></a></td>
+            <td><a href="/<%=image[i].NO%>"><%=image[i].IMAGE%></a></td>
+            <td width="30%"><%=image[i].SIZE%></td>
+        </tr>
+        <% } %>
+    </tbody>    
+</table>

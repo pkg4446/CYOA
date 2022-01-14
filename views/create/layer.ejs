@@ -1,0 +1,167 @@
+<script type="text/javascript">
+
+function send(){
+
+    let url = document.location.href;
+    let result = url.split("layer/");
+        result = result[1].split("/");
+        console.log(result[0]);
+        
+    let form = $('#titleForm')[0]
+    let sendData = new FormData();
+    
+    sendData.append("cyoa",result[0]);
+    sendData.append("layer",result[1]);
+    sendData.append("limit",$("#limit").val());
+    sendData.append("img",$("#photo")[0].files[0]);
+    sendData.append("title",$("#title").val());
+    sendData.append("contents",$("#contents").val());
+    
+    console.log(sendData.values());
+    
+    $.ajax({
+        url: '/create/layer',
+        type: "POST",
+        enctype: 'multipart/form-data',
+        data: sendData,
+        processData: false, 
+        contentType: false,
+        cache: false,
+        success: function(data) {
+            console.log(data);
+            window.location.href = '/create/view/' + result[0];
+        },
+        error: function searchError(xhr, err) {
+            alert("문제가 있다!");
+        }
+    });
+    
+    return false;
+}
+
+function preview(input, target) {
+    if(input.files && input.files[0]){
+        var fileName= input.files[0].name;
+        var ext=fileName.substr(fileName.length-3, fileName.length);
+        var isCheck=false; 
+            if(ext.toLowerCase()=='jpg' || ext.toLowerCase()=='gif' || ext.toLowerCase()=='png'){
+            isCheck=true;               
+        }
+        if(isCheck==false){
+            alert("jpg, png 파일만 가능.");
+            jQuery(input).val("");
+            return;
+        }
+        var reader = new FileReader();
+        reader.readAsDataURL(input.files[0]);          
+        reader.onload = function(e) {
+            jQuery(target).attr('src', e.target.result);
+        }
+    }
+}
+
+function adjustHeight() {
+  var textEle = $('textarea');
+  textEle[0].style.height = 'auto';
+  var textEleHeight = textEle.prop('scrollHeight');
+  textEle.css('height', textEleHeight);
+};
+
+</script>
+
+<style>
+    .align-center{
+        text-align:center;
+        vertical-align:top; 
+        background-color:rgb(0, 0, 0);
+    }
+    .align-justify{text-align:justify; 
+        vertical-align:top; 
+        background-color:rgb(0, 0, 0);
+    }
+    .link{max-width: 100%; height: auto;}
+
+    .title {
+        width:50%;
+        height:50px;
+        font-size:20px;
+    }
+
+    .text {
+        width:50%;
+        font-size:16px;
+    }
+
+    table {
+        width: 100%;
+        border: 1px solid #444444;
+        color: azure;
+    }
+    td {
+        border: 1px solid #444444;
+        color: azure;
+    }
+</style>
+
+<form id="titleForm" method="POST" enctype="multipart/form-data">
+<table width="100%" cellspacing="0">  
+    <thead> 
+        <tr>
+            <th class="align-center">
+                레이어 이미지
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">
+                <img src="/img/noImg.jpg" style="width:100%; height:auto" id='LayerImg'/>
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">
+                <input type="file" id="photo" name="img" class="btn btn-warning btn-icon-split" onchange="preview(this, $('#LayerImg'));"/>
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">
+                선택가능 갯수
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">   
+                <input type="number" class="title" id="limit" name="limit" size="32" maxlength="32" placeholder="여기서 선택 가능한 갯수를 입력하세요.">
+            </th>
+        </tr>
+        <tr>
+        <tr>
+            <th class="align-center">
+                레이어 제목
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">   
+                <input type="text" class="title" id="title" name="title" size="32" maxlength="32" placeholder="Layer 제목을 입력하세요.">
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">
+                레이어 설명
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">
+                <textarea id="contents" name="contents" class="text" placeholder="Layer 내용을 입력하세요." onkeyup="adjustHeight();"></textarea>
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">   
+                <p class="btn btn-success btn-icon-split" onclick=send()>   
+                    <span class="icon text-white-50" >
+                        <i class="fas fa-check"></i>
+                    </span>
+                    <span class="text">저장하고 다음으로</span>
+                </p>    
+            </th>
+        </tr>
+    </thead>
+</table>
+</form>

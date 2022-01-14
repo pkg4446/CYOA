@@ -1,0 +1,18 @@
+<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th width="10%">번호</th>
+            <th>제목</th>
+            <th width="30%">제작자</th>
+        </tr>
+    </thead>
+    <tbody id="datatables">
+        <% for(var i in list){ %>   
+        <tr>
+            <td><%=list[i].NO%></td>
+            <td><a href="/cyoa/<%=list[i].NO%>"><%=list[i].TITLE%></a></td>
+            <td><%=list[i].USER_ID%></td>
+        </tr>
+        <% } %>
+    </tbody>    
+</table>

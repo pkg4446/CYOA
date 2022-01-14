@@ -1,0 +1,126 @@
+<script type="text/javascript">
+
+function send(){
+
+    let url = document.location.href;
+    let result = url.split("option/");
+        result = result[1].split("/");
+        console.log(result[0]);
+        
+    //let form = $('#titleForm')[0]
+    let sendData = {
+            "cyoa":     result[0],
+            "card":     result[1],
+            "title":    $("#title").val(),
+            "contents": $("#contents").val(),
+            "point":    $("#point").val(),
+            };
+    console.log(sendData);
+    
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        url: '/create/choice',
+        type: "POST",
+        dataType:'json',
+        data: JSON.stringify(sendData),
+        success: function(data) {
+            console.log(data);
+            window.location.href = '/create/view/' + result[0];
+        },
+        error: function searchError(xhr, err) {
+            alert("문제가 있다!");
+        }
+    });
+    
+    return false;
+}
+
+function adjustHeight() {
+  var textEle = $('textarea');
+  textEle[0].style.height = 'auto';
+  var textEleHeight = textEle.prop('scrollHeight');
+  textEle.css('height', textEleHeight);
+};
+
+</script>
+
+<style>
+    .align-center{
+        text-align:center;
+        vertical-align:top; 
+        background-color:rgb(0, 0, 0);
+    }
+    .align-justify{text-align:justify; 
+        vertical-align:top; 
+        background-color:rgb(0, 0, 0);
+    }
+    .link{max-width: 100%; height: auto;}
+
+    .title {
+        width:50%;
+        height:50px;
+        font-size:20px;
+    }
+
+    .text {
+        width:50%;
+        font-size:16px;
+    }
+
+    table {
+        width: 100%;
+        border: 1px solid #444444;
+        color: azure;
+    }
+    td {
+        border: 1px solid #444444;
+        color: azure;
+    }
+</style>
+
+<form id="titleForm" method="POST" enctype="multipart/form-data">
+<table width="100%" cellspacing="0">  
+    <thead> 
+        <tr>
+            <th class="align-center">
+                옵션 제목
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">   
+                <input type="text" class="title" id="title" name="title" size="32" maxlength="32" placeholder="optin 제목을 입력하세요.">
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">
+                옵션 설명
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">
+                <textarea id="contents" name="contents" class="text" placeholder="optin 내용을 입력하세요." onkeyup="adjustHeight();"></textarea>
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">
+                포인트
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">   
+                <input type="number" class="title" id="point" name="point" size="32" maxlength="32" placeholder="포인트를 입력하세요.">
+            </th>
+        </tr>
+        <tr>
+            <th class="align-center">   
+                <p class="btn btn-success btn-icon-split" onclick=send()>   
+                    <span class="icon text-white-50" >
+                        <i class="fas fa-check"></i>
+                    </span>
+                    <span class="text">저장하고 다음으로</span>
+                </p>    
+            </th>
+        </tr>
+    </thead>
+</table>
+</form>
