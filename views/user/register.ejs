@@ -18,8 +18,9 @@
                 success : function(data) {
                     if(data.userCheck === "notAble"){
                         alert("이미 가입된 아이디 입니다.");
+                    }else{
+                        window.location.href = "/user/login";
                     }
-                    window.location.href = "/user/login";
                 }, // success 
                 error : function(xhr, status) {
                     alert(xhr + " : " + status);
